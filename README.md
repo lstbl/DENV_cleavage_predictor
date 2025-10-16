@@ -1,4 +1,4 @@
-#DENV Cleavage Predictor
+# DENV Cleavage Predictor
 
 Neural network (PyTorch) and SVM (scikit-learn) models to classify 8-mer peptide windows as cleaved or uncleaved by dengue virus protease.
 The repo includes pre-trained models so you can reproduce the paper figures/tables out-of-the-box. You can also re-train from scratch by toggling a the `DoNewRuns` flag in the notebook. You can also train a completely new set of models on positive and negative training data 8-mers by toggling the `FREEZE` variable and providing the required positive and negative training data in .tsv files
@@ -15,8 +15,8 @@ NOTE: the training examples contain amino acid biological properties that are lo
 
 File sizes: several data/model files are ~75 MB each (below GitHub’s 100 MB limit; Git LFS not required).
 
-#Quick start
-##Suggested workflow
+# Quick start
+## Suggested workflow
 1) install miniconda (e.g. found at https://www.anaconda.com/docs/getting-started/miniconda/install or by using a package manager)
 2) create environment with dependency using provided .yml file:
 `conda env create -f environment.yml`
@@ -26,7 +26,7 @@ File sizes: several data/model files are ~75 MB each (below GitHub’s 100 MB li
 
 The jupyter notebook can be run using jupyterlab, ipython notebook, or third party IDE (e.g. VSCode)
 
-###Open the notebook (using jupyter notebook)
+### Open the notebook (using jupyter notebook)
 `jupyter notebook`
 Choose pretrained vs. retrain (toggle `DoNewRuns`)
 To use pretrained models (default): In the first cell, ensure `DoNewRuns = False`
