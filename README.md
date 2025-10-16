@@ -1,10 +1,10 @@
 #DENV Cleavage Predictor
 
 Neural network (PyTorch) and SVM (scikit-learn) models to classify 8-mer peptide windows as cleaved or uncleaved by dengue virus protease.
-The repo includes pre-trained models so you can reproduce the paper figures/tables out-of-the-box. You can also re-train from scratch by toggling a the "DoNewRuns" flag in the notebook.
+The repo includes pre-trained models so you can reproduce the paper figures/tables out-of-the-box. You can also re-train from scratch by toggling a the "DoNewRuns" flag in the notebook. You can also train a completely new set of models on positive and negative training data 8-mers by toggling the "FREEZE" variable and providing the required positive and negative training data in .tsv files
 
 What’s inside
--DengueProtease.ipynb — end-to-end workflow (load data → encode 8-mers → train/evaluate NN & SVM → score/rank test sites → plot).
+-DengueProtease.ipynb — end-to-end workflow (load data → encode 8-mers → train/evaluate NN & SVM (or load pre-trained models) → score/rank test sites → plot).
 -training_examples.positives_nopct.tsv — labeled cleaved 8-mers derived from DENV genomes
 -training_examples.negatives_nopct.tsv — labeled uncleaved 8-mers derived from DENV genomes
 -sites_to_test_ER_and_ER_membrane_with_encoding_nopct.tsv — unlabeled candidate 8-mers to score/rank derived from human ER proteins
@@ -22,11 +22,12 @@ File sizes: several data/model files are ~75 MB each (below GitHub’s 100 MB li
 `conda env create -f environment.yml`
 3) activate environment
 `conda activate <env-name>`
+4) Change `dire` to the working directory on your local machine
 
 The jupyter notebook can be run using jupyterlab, ipython notebook, or third party IDE (e.g. VSCode)
 
 ###Open the notebook (using jupyter notebook)
-jupyter notebook DengueProtease.ipynb
+`jupyter notebook`
 Choose pretrained vs. retrain (toggle "DoNewRuns")
 To use pretrained models (default): In the first cell, ensure `DoNewRuns = False`
 
@@ -40,6 +41,15 @@ and run all cells. This performs multiple stochastic training runs (default Nite
 nn_results_{Niter}iter_xxx.pkl.gz
 svm_results_{Niter}iter_xxx.pkl.gz
 
+to re-train a model with new data, you will need to provide a new files to replace
+ `training_examples.positives_nopct.tsv`
+ AND
+ `training_examples.negatives_nopct.tsv` 
+
+This can be done by toggling the "FREEZE" variable to True and entring the appropriate filenames
+ 
+ files and a new 8mer test file (currently labeled as  `sites_to_test_ER_and_ER_membrane_with_encoding_nopct.tsv` for this study)
+
 #Overview of models
 Encoding: 8-mer sequences are one-hot encoded and added to biological properties in the input files
 
@@ -48,14 +58,31 @@ Neural Net (PyTorch): The neural net (NN) has three-layers. The first two layers
 
 SVM (scikit-learn): RBF kernel with C=5.0 (defaults visible in code).
 
-Evaluation: accuracy/precision and ROC-style diagnostics are computed during training/testing--essentially perfect performance on training data.
+Evaluation: accuracy/precision and ROC-style diagnostics are computed during training/testing--essentially perfect performance on training data for the current study (discussed in manuscript).
 
 Scoring & Ranking: the notebook scores all candidate 8-mers (from a filtered human proteome), aggregates across runs, and reports ranks from both NN and SVM. Predefined sets of experimentally tested positives/negatives are highlighted in the final scatter/rank views.
 
+##Runtime
+Neural net runtime:
+- on a consumer-grade NVIDIA GeForce RTX 3090 NN training takes ~10 sec per iteration (~16m to run 100 iterations for NN model)
+- on CPU (Intel i7 2.2 GHz) takes ~180s per iteration (~5h to complete 100 iterations)
+
+SVM runtime:
+- on a consumer-grade NVIDIA GeForce RTX 3090 NN training takes ~3 sec per iteration (~5m to run 100 iterations for NN model)
+- on CPU (Intel i7 2.2 GHz) takes ~10s per iteration (~16m to complete 100 iterations)
+
+For the current study, the results are not significantly impacted by reducing the number of iterations. This can be tried if the runtime is too burdensome for an exploratory analysis (change the value for the `Niter` parameter)
 
 ##Reproducibility tips
--Training uses stochastic elements; results and ranks will vary slightly between runs.
--For deterministic reruns, set a seed (where applicable) before training.
+-Training uses stochastic elements; results and ranks will vary slightly between runs (note pre-loaded models differ slightly from the model used to produce TableS1)
+-For deterministic reruns, set a seed (e.g. 
+`
+    seed_value = 42
+    np.random.seed(seed_value)  # Seed NumPy's RNG
+    random.seed(seed_value)    # Seed Python's built-in random module
+    torch.manual_seed(seed_value) # Seed PyTorch's CPU RNG
+`
+where applicable) before training.
 
 
 #Citation
