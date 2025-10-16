@@ -1,32 +1,31 @@
 #DENV Cleavage Predictor
 
-Neural network (PyTorchd) and SVM (scikit-learn) models to classify 8-mer peptide windows as cleaved or uncleaved by dengue virus protease.
+Neural network (PyTorch) and SVM (scikit-learn) models to classify 8-mer peptide windows as cleaved or uncleaved by dengue virus protease.
 The repo includes pre-trained models so you can reproduce the paper figures/tables out-of-the-box. You can also re-train from scratch by toggling a the "DoNewRuns" flag in the notebook.
 
 What’s inside
 -DengueProtease.ipynb — end-to-end workflow (load data → encode 8-mers → train/evaluate NN & SVM → score/rank test sites → plot).
--training_examples.positives_nopct.tsv — labeled cleaved 8-mers.
--training_examples.negatives_nopct.tsv — labeled uncleaved 8-mers.
--sites_to_test_ER_and_ER_membrane_with_encoding_nopct.tsv — unlabeled candidate 8-mers to score/rank.
+-training_examples.positives_nopct.tsv — labeled cleaved 8-mers derived from DENV genomes
+-training_examples.negatives_nopct.tsv — labeled uncleaved 8-mers derived from DENV genomes
+-sites_to_test_ER_and_ER_membrane_with_encoding_nopct.tsv — unlabeled candidate 8-mers to score/rank derived from human ER proteins
 -Pretrained model outputs (examples used by the notebook when DoNewRuns=False):
--nn_results_100iter_1.pkl.gz
--svm_results_100iter_1.pkl.gz
+-nn_results_100iter_{1,2}.pkl.gz
+-svm_results_100iter_{1,2}.pkl.gz
 NOTE: the training examples contain amino acid biological properties that are located in the "AA_properties.txt" file
 
 File sizes: several data/model files are ~75 MB each (below GitHub’s 100 MB limit; Git LFS not required).
 
 #Quick start
-##Set up the environment
-(Optional) Create from environment.yml 
-conda env create -f environment.yml
-conda activate <env-name>
+##Suggested workflow
+1) install miniconda (e.g. found at https://www.anaconda.com/docs/getting-started/miniconda/install or by using a package manager)
+2) create environment with dependency using provided .yml file:
+`conda env create -f environment.yml`
+3) activate environment
+`conda activate <env-name>`
 
-##Or install key deps
-conda install -y python>=3.10 numpy pandas scikit-learn matplotlib
-pip install torch --index-url https://download.pytorch.org/whl/cpu
+The jupyter notebook can be run using jupyterlab, ipython notebook, or third party IDE (e.g. VSCode)
 
-
-###Open the notebook
+###Open the notebook (using jupyter notebook)
 jupyter notebook DengueProtease.ipynb
 Choose pretrained vs. retrain (toggle "DoNewRuns")
 To use pretrained models (default): In the first cell, ensure `DoNewRuns = False`
@@ -41,7 +40,7 @@ and run all cells. This performs multiple stochastic training runs (default Nite
 nn_results_{Niter}iter_xxx.pkl.gz
 svm_results_{Niter}iter_xxx.pkl.gz
 
-How it works (high level)
+#Overview of models
 Encoding: 8-mer sequences are one-hot encoded and added to biological properties in the input files
 
 Models:
@@ -64,4 +63,4 @@ Scoring & Ranking: the notebook scores all candidate 8-mers (from a filtered hum
 If you use this code, data, or pretrained models in a publication, please cite the associated manuscript once available.
 
 #License
-All rights reserved
+free to use, modify, and distribute with attribution; provided “as is,” without warranty.
