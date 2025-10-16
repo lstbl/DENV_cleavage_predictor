@@ -21,7 +21,7 @@ File sizes: several data/model files are ~75 MB each (below GitHub’s 100 MB li
 2) create environment with dependency using provided .yml file:
 `conda env create -f environment.yml`
 3) activate environment
-`conda activate <env-name>`
+`conda activate DGAT2_final_GitHub`
 4) Change `dire` to the working directory on your local machine
 
 The jupyter notebook can be run using jupyterlab, ipython notebook, or third party IDE (e.g. VSCode)
